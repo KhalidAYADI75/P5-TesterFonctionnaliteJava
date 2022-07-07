@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class TicketDAO {
 
@@ -56,8 +57,8 @@ public class TicketDAO {
                 ticket.setId(rs.getInt(2));
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
-                ticket.setInTime(rs.getTimestamp(4));
-                ticket.setOutTime(rs.getTimestamp(5));
+                ticket.setInTime(new Date(rs.getTimestamp(4).getTime()));
+                ticket.setOutTime(rs.getTimestamp(5)!=null? new Date(rs.getTimestamp(5).getTime()):null);
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -85,5 +86,34 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
         }
         return false;
+    }
+
+    public Ticket getTicketOutTimeNotNull(String vehicleRegNumber) {
+        Connection con = null;
+        Ticket ticket = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_OUTTIME_NOT_NULL);
+            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                ticket = new Ticket();
+                ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)),false);
+                ticket.setParkingSpot(parkingSpot);
+                ticket.setId(rs.getInt(2));
+                ticket.setVehicleRegNumber(vehicleRegNumber);
+                ticket.setPrice(rs.getDouble(3));
+                ticket.setInTime(new Date(rs.getTimestamp(4).getTime()));
+                ticket.setOutTime(new Date(rs.getTimestamp(5).getTime()));
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+            return ticket;
+        }
     }
 }

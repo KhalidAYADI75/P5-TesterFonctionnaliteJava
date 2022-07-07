@@ -12,6 +12,11 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * Handles the incoming and outcoming process.
+ * When vehicule enter in the parking , runs the method processIncomingVehicle()
+ * When vehicule get out of the parking , runs the method processExitingVehicle()
+ */
 public class ParkingService {
 
     private static final Logger logger = LogManager.getLogger("ParkingService");

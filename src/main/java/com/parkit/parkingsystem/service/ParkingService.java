@@ -39,9 +39,11 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
+                if (checkIfRecurrentUser(vehicleRegNumber)==true) {
+                    System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+                }
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
-
                 Date inTime = new Date();
                 ticket = new Ticket();
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
@@ -106,13 +108,17 @@ public class ParkingService {
     }
 
     public Ticket processExitingVehicle() {
+        boolean recurrentUser=false;
         Ticket ticket = null;
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             ticket = ticketDAO.getTicket(vehicleRegNumber);
+            if (checkIfRecurrentUser(vehicleRegNumber)==true) {
+                recurrentUser=true;
+            }
             Date outTime = new Date();
             ticket.setOutTime(outTime);
-            fareCalculatorService.calculateFare(ticket);
+            fareCalculatorService.calculateFare(ticket,recurrentUser);
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
@@ -126,5 +132,20 @@ public class ParkingService {
             logger.error("Unable to process exiting vehicle",e);
         }
         return ticket;
+    }
+    public boolean checkIfRecurrentUser(String vehicleRegNumber) {
+        boolean recurrentUser=false;
+        Ticket ticket=null;
+        try {
+            ticket = ticketDAO.getTicketOutTimeNotNull(vehicleRegNumber);
+            if (ticket!=null) {
+                recurrentUser=true;
+            } else {
+                recurrentUser=false;
+            }
+        } catch (Exception e) {
+            logger.error("Unable to process", e);
+        }
+        return recurrentUser;
     }
 }

@@ -83,6 +83,19 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
+    public void calculateFareBikeWithSameIntimeAndOutime(){
+        Date inTime = new Date();
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket,false);
+        assertEquals(ticket.getPrice(), 0);
+    }
+
+    @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (  45 * 60 * 1000) );//45 minutes parking time should give 3/4th parking fare

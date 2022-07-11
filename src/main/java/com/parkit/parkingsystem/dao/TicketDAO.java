@@ -116,4 +116,34 @@ public class TicketDAO {
             return ticket;
         }
     }
+
+    public Ticket getTicketById(int ticketId) {
+        Connection con = null;
+        Ticket ticket = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_BY_ID);
+            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            //t.PARKING_NUMBER, t.ID, t.PRICE, t.IN_TIME, t.OUT_TIME, p.TYPE,t.VEHICLE_REG_NUMBER
+            ps.setInt(1,ticketId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                ticket = new Ticket();
+                ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)),false);
+                ticket.setParkingSpot(parkingSpot);
+                ticket.setId(rs.getInt(2));
+                ticket.setVehicleRegNumber(rs.getString(7));
+                ticket.setPrice(rs.getDouble(3));
+                ticket.setInTime(new Date(rs.getTimestamp(4).getTime()));
+                ticket.setOutTime(new Date(rs.getTimestamp(5).getTime()));
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+            return ticket;
+        }
+    }
 }

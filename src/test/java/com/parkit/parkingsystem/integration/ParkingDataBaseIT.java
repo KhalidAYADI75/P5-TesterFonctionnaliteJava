@@ -66,8 +66,8 @@ public class ParkingDataBaseIT {
         Ticket ticket=parkingService.processIncomingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
         ticket=parkingService.processExitingVehicle();
-        Ticket ticketFromDatabase=ticketDAO.getTicketOutTimeNotNull(ticket.getVehicleRegNumber());
-        assertEquals(ticket.getPrice(),ticketFromDatabase.getPrice());
-        assertEquals(ticket.getOutTime().toString(),ticketFromDatabase.getOutTime().toString());
+        Ticket ticketFromDatabase=ticketDAO.getTicketById(ticket.getId());
+        assertNotNull(ticketFromDatabase.getPrice());
+        assertNotNull(ticketFromDatabase.getOutTime());
     }
 }

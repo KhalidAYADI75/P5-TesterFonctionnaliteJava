@@ -54,7 +54,6 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingACar(){
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
         Ticket ticket=parkingService.processIncomingVehicle();
         assertNotNull(ticket);
         assertFalse(ticket.getParkingSpot().isAvailable());
@@ -64,7 +63,6 @@ public class ParkingDataBaseIT {
     public void testParkingLotExit(){
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         Ticket ticket=parkingService.processIncomingVehicle();
-        //TODO: check that the fare generated and out time are populated correctly in the database
         ticket=parkingService.processExitingVehicle();
         Ticket ticketFromDatabase=ticketDAO.getTicketById(ticket.getId());
         assertNotNull(ticketFromDatabase.getPrice());

@@ -137,7 +137,7 @@ public class ParkingService {
         boolean recurrentUser=false;
         Ticket ticket=null;
         try {
-            ticket = ticketDAO.getTicketOutTimeNotNull(vehicleRegNumber);
+            ticket = ticketDAO.getTicket(vehicleRegNumber);
             if (ticket!=null) {
                 recurrentUser=true;
             } else {

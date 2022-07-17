@@ -11,7 +11,7 @@ public class FareCalculatorService {
 
     public void calculateFare(Ticket ticket,boolean recurrentUser){
         double duration;
-
+        double price;
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ) {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
@@ -20,7 +20,7 @@ public class FareCalculatorService {
         long lduration = (outHour - inHour) / 60000;
         duration = lduration / 60.0;
         if (duration<=0.50) {
-            ticket.setPrice(Fare.RATE_UNDER_HALF_HOUR);
+            price=Fare.RATE_UNDER_HALF_HOUR;
         } else {
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {

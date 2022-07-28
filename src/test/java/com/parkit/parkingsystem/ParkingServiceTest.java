@@ -33,7 +33,6 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
-
     @Test
     public void processExitingVehicleTest(){
         try {
@@ -67,7 +66,6 @@ public class ParkingServiceTest {
        }
        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
        Ticket ticket=parkingService.processIncomingVehicle();
-       verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
        assertNotNull(ticket);
        assertFalse(ticket.getParkingSpot().isAvailable());
     }
@@ -76,15 +74,28 @@ public class ParkingServiceTest {
     public void getNextParkingNumberIfAvailableTest(){
         try {
             when(inputReaderUtil.readSelection()).thenReturn(1);
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
             when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
         } catch (Exception e) {
             e.printStackTrace();
             throw  new RuntimeException("Failed to set up test mock objects");
         }
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        Ticket ticket=parkingService.processIncomingVehicle();
-        assertEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
+        ParkingSpot parkingSpot=parkingService.getNextParkingNumberIfAvailable();
+        assertEquals(1, parkingSpot.getId());
     }
 
+    @Test
+   public void checkIfRecurrentUserTest() {
+        try {
+            when(parkingService.processIncomingVehicle()).thenReturn(ticketDAO.getTicket("ABCDEF"));
+            when(parkingService.processExitingVehicle()).thenReturn(ticketDAO.getTicket("ABCDEF"));
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new RuntimeException("Failed to set up test mock objects");
+        }
+        assertTrue(parkingService.checkIfRecurrentUser("ABCDEF"));
+   }
 }

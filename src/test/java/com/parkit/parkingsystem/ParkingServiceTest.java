@@ -83,21 +83,9 @@ public class ParkingServiceTest {
     }
     @Test
     public void checkIfRecurrentUserTest() {
-     //   assertTrue(parkingService.checkIfRecurrentUser("ABCDEF"));
-  /*      public boolean checkIfRecurrentUser(String vehicleRegNumber) {
-            boolean recurrentUser=false;
-            Ticket ticket=null;
-            try {
-                ticket = ticketDAO.getTicket(vehicleRegNumber);
-                if (ticket!=null) {
-                    recurrentUser=true;
-                } else {
-                    recurrentUser=false;
-                }
-            } catch (Exception e) {
-                logger.error("Unable to process", e);
-            }
-            return recurrentUser;
-        } */
+        when(ticketDAO.getTicket("ABCDEF")).thenReturn(new Ticket());
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+       boolean isRecurrentUser= parkingService.checkIfRecurrentUser("ABCDEF");
+       assertTrue(isRecurrentUser);
     }
 }

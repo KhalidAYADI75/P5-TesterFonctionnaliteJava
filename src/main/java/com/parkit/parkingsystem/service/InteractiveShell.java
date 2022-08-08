@@ -8,8 +8,20 @@ import org.apache.logging.log4j.Logger;
 
 public class InteractiveShell {
 
-    public InputReaderUtil inputReaderUtil;
+    private InputReaderUtil inputReaderUtil;
     public ParkingSpotDAO parkingSpotDAO;
+
+    public void setParkingService(ParkingService parkingService) {
+        this.parkingService = parkingService;
+    }
+
+    public void setInputReaderUtil(InputReaderUtil inputReaderUtil) {
+        this.inputReaderUtil = inputReaderUtil;
+    }
+
+    public InputReaderUtil getInputReaderUtil() {
+        return inputReaderUtil;
+    }
 
     public ParkingService parkingService;
 
@@ -23,6 +35,7 @@ public class InteractiveShell {
         this.ticketDAO = new TicketDAO();
         this.parkingService=new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
     }
+
     public void loadInterface(){
         logger.info("App initialized!!!");
         System.out.println("Welcome to Parking System!");
@@ -30,7 +43,7 @@ public class InteractiveShell {
 
         while(continueApp){
             loadMenu();
-            int option = inputReaderUtil.readSelection();
+            int option = this.getInputReaderUtil().readSelection();
             switch(option){
                 case 1: {
                     parkingService.processIncomingVehicle();

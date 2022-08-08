@@ -34,7 +34,7 @@ public class InteractiveShellTest {
     }
 
     @Test
-    public void loadInterfaceProcessIncomingVehicleTest() {
+    public void loadInterfaceTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1, 2,3);
         when(parkingService.processIncomingVehicle()).thenReturn(new Ticket());
         when(parkingService.processExitingVehicle()).thenReturn(new Ticket());

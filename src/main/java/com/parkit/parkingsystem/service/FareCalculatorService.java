@@ -12,13 +12,14 @@ public class FareCalculatorService {
     public void calculateFare(Ticket ticket,boolean recurrentUser){
         double duration;
         double price;
-        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ) {
-            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
-        }
         long inHour = ticket.getInTime().getTime();
         long outHour = ticket.getOutTime().getTime();
+        long diff=outHour-inHour;
         long lduration = (outHour - inHour) / 60000;
         duration = lduration / 60.0;
+        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()) && diff<-2000) ) {
+            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
+        }
         if (duration<=0.50) {
             price=Fare.RATE_UNDER_HALF_HOUR;
         } else {

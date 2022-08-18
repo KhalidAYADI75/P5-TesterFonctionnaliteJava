@@ -25,54 +25,47 @@ public class TicketDAOTest {
 
     @Test
     public void getTicketTest() {
+        ticketDAO = new TicketDAO();
         ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.CAR, false);
         Ticket ticket = new Ticket();
         ticket.setVehicleRegNumber("ABCDEF");
-        Date inTime = new Date();
-        ticket = new Ticket();
         ticket.setParkingSpot(parkingSpot);
         ticket.setPrice(0);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(null);
-        ticket.setPrice(0);
-        ticket.setOutTime(null);
-        ticketDAO=new TicketDAO();
+        ticket.setInTime(new Date());
+        ticket.setOutTime(new Date());
         ticketDAO.saveTicket(ticket);
-        assertEquals(ticket.getVehicleRegNumber(),ticketDAO.getTicket("ABCDEF"));
+        assertEquals(ticket.getVehicleRegNumber(),ticketDAO.getTicket("ABCDEF").getVehicleRegNumber());
     }
     @Test
     public void updateTicketTest() {
+        ticketDAO = new TicketDAO();
         ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.CAR, false);
         Ticket ticket = new Ticket();
         ticket.setVehicleRegNumber("ABCDEF");
-        Date inTime = new Date();
-        ticket = new Ticket();
         ticket.setParkingSpot(parkingSpot);
         ticket.setPrice(0);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(null);
-        ticket.setPrice(0);
-        ticket.setOutTime(null);
-        ticketDAO=new TicketDAO();
+        ticket.setInTime(new Date());
+        ticket.setOutTime(new Date());
         ticketDAO.saveTicket(ticket);
+        ticket = ticketDAO.getTicket("ABCDEF");
+        int newPrice = 2500;
+        ticket.setPrice(newPrice);
         ticketDAO.updateTicket(ticket);
-        assertNotNull(ticketDAO);
+        ticket = ticketDAO.getTicket("ABCDEF");
+        assertEquals(ticket.getPrice(),newPrice);
     }
     @Test
     public void getTicketByIdTest() {
+        ticketDAO = new TicketDAO();
         ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.CAR, false);
         Ticket ticket = new Ticket();
         ticket.setVehicleRegNumber("ABCDEF");
-        Date inTime = new Date();
-        ticket = new Ticket();
         ticket.setParkingSpot(parkingSpot);
         ticket.setPrice(0);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(null);
-        ticket.setPrice(0);
-        ticket.setOutTime(null);
-        ticketDAO=new TicketDAO();
+        ticket.setInTime(new Date());
+        ticket.setOutTime(new Date());
         ticketDAO.saveTicket(ticket);
-        assertEquals(ticket.getVehicleRegNumber(),ticketDAO.getTicketById(ticket.getId()));
+        ticket = ticketDAO.getTicket("ABCDEF");
+        assertEquals("ABCDEF",ticketDAO.getTicketById(ticket.getId()).getVehicleRegNumber());
     }
 }
